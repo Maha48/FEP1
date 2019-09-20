@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['userid'])){
-    echo"ddd";
+ 
     header("location: index.php");
 }
 ?>
@@ -248,6 +248,9 @@ window.onclick = function(event) {
 </form>
 <img src="images\loading.gif" style="margin-left:35%;display:none;"id="load-img" >
     <div id="PSSD_INFO"> </div>
+<form method="post" action="download.php">
+<input type="submit"class="button button5"  value="Download" name="Download">
+</form>
 </div > </div>
 
 <!-- end suggest new day SSD -->
