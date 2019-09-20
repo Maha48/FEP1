@@ -25,7 +25,7 @@ if($query->num_rows > 0){
     fputcsv($f, $fields, $delimiter);
      //output each row of the data, format line as csv and write to file pointer 
     while($row = $query->fetch_assoc()){
-        $lineData = array($row['id'], $row['Class_ID'], $row['Subject_ID'], $row['Student_ID'], $row['Subject_name'], $row['exam_days'], $row['exam_dates'], $row['exam_times']);
+        $lineData = array( $row['Class_ID'], $row['Subject_ID'], $row['Student_ID'], $row['Subject_name'], $row['exam_days'], $row['exam_dates'], $row['exam_times']);
         fputcsv($f, $lineData, $delimiter);
     }
      //move back to beginning of file
