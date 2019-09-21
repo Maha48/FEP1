@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {//يحدد ما إذا كان الط�
     }
 }
 
-   ?>
+?>
         <div id="basicdiv">
             <img id="psauimage" src="images/Prince_Sattam_Bin_Abdulaziz_University.png">
             <img id="fepimage" src="images/FEP.png">
