@@ -38,15 +38,15 @@ if (mysqli_num_rows($query) > 0) {
         $fileName = $_FILES["file"]["tmp_name"];
         if ($_FILES["file"]["size"] > 0) {
             $file = fopen($fileName, "r");
-            while (($column = fgetcsv($file, 110000, ";")) !== false) {
-                $sqlInsert = "INSERT into Examdata (Class_ID,Subject_ID,Student_ID,Subject_name,exam_days,exam_dates,exam_times)
-                values ('" . $column[0] . "','" . $column[1] . "','" . $column[2] . "','" . $column[3] . "','" . $column[4] . "','" . $column[5] . "','" . $column[6] . "')";
+            while (($column = fgetcsv($file, 110000, ",")) !== false) {
+                $sqlInsert = "INSERT into Examdata (Class_ID,Subject_ID,Student_ID,Subject_name,lecturer_name,exam_days,exam_dates,exam_times)
+                values ('" . $column[0] . "','" . $column[1] . "','" . $column[2] . "','" . $column[3] . "','" . $column[4] . "','" . $column[5] . "','" . $column[6] . "','" . $column[7] . "')";
                 $result = mysqli_query($connection, $sqlInsert);
                 if (!empty($result)) {
-                    // $addid="ALTER TABLE `examdata` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
-                    // ";
-                    // $Eaddid=mysqli_query($connection,$addid);
-                    $dataclean="DELETE n1 FROM Examdata n1, Examdata n2 WHERE n1.id > n2.id AND n1.`Class_ID` = n2.`Class_ID` AND n1.`Subject_ID` = n2.`Subject_ID` AND n1.`Student_ID` = n2.`Student_ID` AND n1.`Subject_name` = n2.`Subject_name` AND n1.`exam_days` = n2.`exam_days` AND n1.`exam_dates` = n2.`exam_dates` and n1.`exam_times` = n2.`exam_times`
+                    $addid="ALTER TABLE `examdata` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
+                    ";
+                    $Eaddid=mysqli_query($connection,$addid);
+                    $dataclean="DELETE n1 FROM Examdata n1, Examdata n2 WHERE n1.id > n2.id AND n1.`Class_ID` = n2.`Class_ID` AND n1.`Subject_ID` = n2.`Subject_ID` AND n1.`Student_ID` = n2.`Student_ID` AND n1.`Subject_name` = n2.`Subject_name` AND n1.`lecturer_name` = n2.`lecturer_name`AND n1.`exam_days` = n2.`exam_days` AND n1.`exam_dates` = n2.`exam_dates` and n1.`exam_times` = n2.`exam_times`
                     ";
                     $datacleaning=mysqli_query($connection,$dataclean);
                     $message = "Upload Done ";
@@ -130,6 +130,7 @@ if (isset($_POST['delete'])) {
     <th width="8%">Class ID</th>
     <th width="4%">Subject_ID</th>
     <th width="20%">Subject_name</th>
+    <th width="10%">lecturer_name</th>
     <th width="10%">exam_days</th>
     <th width="8%">exam_dates</th>
     <th width="10%">exam_dates</th>
@@ -161,6 +162,7 @@ foreach ($SSD_sql as $sq) {
     echo '<td class="myDIV">' . $sq["Class_ID"] . '</td>';
     echo '<td class="myDIV">' . $sq["Subject_ID"] . '</td>';
     echo '<td class="myDIV">' . $sq["Subject_name"] . '</td>';
+    echo '<td class="myDIV">' . $sq["lecturer_name"] . '</td>';
     echo '<td class="myDIV">' . $sq["exam_days"] . '</td>';
     echo '<td class="myDIV">' . $sq["exam_dates"] . '</td>';
     echo '<td class="myDIV">' . $sq["exam_times"] . '</td></tr>';
@@ -246,11 +248,11 @@ window.onclick = function(event) {
 <form method="POST" id="proform">
 <input class="button button5" type="submit" name="processing" id="processing" value="processing" onclick="myFunction()">
 </form>
-<img src="images\loading.gif" style="margin-left:35%;display:none;"id="load-img" >
-    <div id="PSSD_INFO"> </div>
 <form method="post" action="download.php">
 <input type="submit"class="button button5"  value="Download" name="Download">
 </form>
+<img src="images\loading.gif" style="margin-left:35%;display:none;"id="load-img" >
+<div id="PSSD_INFO"> </div>
 </div > </div>
 
 <!-- end suggest new day SSD -->
@@ -276,10 +278,11 @@ window.onclick = function(event) {
 <thead>
 <tr ID="HE">
     <th width="12.5%">Class ID</th>
+    <th width="12.5%"> Subject ID</th>
     <th width="12.5%">First Subject Name</th>
+    <th width="12.5%">lecturer    name</th>
     <th width="12.5%">First Exam    Day</th>
     <th width="12.5%">First Exam    Date</th>
-
     <th width="12.5%">Next  Subject Name</th>
     <th width="12.5%">Next  Exam    Day</th>
     <th width="12.5%">Next  Exam    Date</th>
@@ -295,8 +298,8 @@ window.onclick = function(event) {
 try {
      $conn=new pdo ("mysql:host=$db_host;port=8889;dbname=$Database" , $db_username,$db_password);
 //البحث عن الطلاب الذين لديهم اختبارات متتالية في أيام متتابعة 
-    $CEDSA="SELECT e1.Class_ID, e1.Student_ID,
-    e1.subject_name as first_subject_name, e1.exam_days as first_exam_day,  e1.exam_dates as First_Exam_Date,
+    $CEDSA="SELECT e1.Class_ID,e1.Subject_ID, e1.Student_ID,
+    e1.subject_name as first_subject_name,e1.lecturer_name,e1.exam_days as first_exam_day,  e1.exam_dates as First_Exam_Date,
         e2.subject_name as next_subject_name , e2.exam_days as next_exam_day,e2.exam_dates as next_Exam_Date
         , e1.Student_ID in (
     select B.student_ID from students_away B
@@ -328,7 +331,9 @@ foreach ($CED_sql as $cq) {
 
     echo '<tr id="CED_data" class="'. $student_CED . '" >';
     echo '<td class="myDIV">' . $cq["Class_ID"] . '</td>';
+    echo '<td class="myDIV">' . $cq["Subject_ID"] . '</td>';
     echo '<td class="myDIV">' . $cq["first_subject_name"] . '</td>';
+    echo '<td class="myDIV">' . $cq["lecturer_name"] . '</td>';
     echo '<td class="myDIV">' . $cq["first_exam_day"] . '</td>';
     echo '<td class="myDIV">' . $cq["First_Exam_Date"] . '</td>';
     
@@ -339,7 +344,9 @@ foreach ($CED_sql as $cq) {
 else{
     echo '<tr id="CED_data" class="'. $student_CED . '" >';
     echo '<td class="SA">' . $cq["Class_ID"] . '</td>';
+    echo '<td class="SA">' . $cq["Subject_ID"] . '</td>';
     echo '<td class="SA">' . $cq["first_subject_name"] . '</td>';
+    echo '<td class="SA">' . $cq["lecturer_name"] . '</td>';
     echo '<td class="SA">' . $cq["first_exam_day"] . '</td>';
     echo '<td class="SA">' . $cq["First_Exam_Date"] . '</td>';
     

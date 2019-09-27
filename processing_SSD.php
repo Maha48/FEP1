@@ -42,13 +42,14 @@ if(!$EcheckSSSD){
   </script>';
  }
 else{ 
+    
     //تغير حالة زر المعالجة 
     $Bcheck=mysqli_query($connection,"UPDATE buttons 
     SET PSSD=1
     WHERE PSSD=0");
 
 // تحديد المواد التي حصلت عندها المشكله
-$S_SSSD=$connection->query("SELECT distinct Subject_ID ,exam_days,exam_dates,Subject_name FROM SSSD ")->fetch_all(MYSQLI_ASSOC);
+$S_SSSD=$connection->query("SELECT distinct Class_ID,Subject_ID ,exam_days,exam_dates,Subject_name,lecturer_name FROM SSSD ")->fetch_all(MYSQLI_ASSOC);
 $TSTUDENTSOFSSSD="CREATE TEMPORARY TABLE TSSSSD 
 (Student_ID INT(11));";
 $ETSTUDENTSOFSSSD=mysqli_query($connection,$TSTUDENTSOFSSSD);
@@ -89,8 +90,10 @@ $DELETEE=mysqli_query($connection,$DELETE);
 <table class="t1">
 <thead>
     <tr>
+    <th> Class ID</th>
         <th> Subject ID</th>
         <th> Subject name</th>
+        <th> lecturer name</th>
         <th> Previous exam day</th>
         <th> Previous exam date</th>
         <th> Previous student Count</th>
@@ -121,8 +124,10 @@ AND exam_dates='$Previous_examdate'";
     $F_Previous_count=mysqli_fetch_array($E_Previous_count);
 if ($F_Previous_count['PCstudents']!=0){
 echo'<tr>';
+echo '<td>'.$s1['Class_ID'].'</td>';
     echo '<td>'.$Subject_ID.'</td>';
     echo '<td>'.$s1['Subject_name'].'</td>';
+    echo '<td>'.$s1['lecturer_name'].'</td>';
     echo '<td>'.$s1['exam_days'].'</td>';
     echo '<td>'.$Previous_examdate.'</td>';
     echo '<td>'.$F_Previous_count['PCstudents'].'</td>';

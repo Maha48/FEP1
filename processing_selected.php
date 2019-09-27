@@ -47,6 +47,8 @@ echo '<option value='.$selectedsubject.'>'.$selectedsubject.'</option>';
 
         <th> Subject name</th>
 
+        <th>lecturer name</th>
+
         <th> Previous exam day</th>
 
         <th> Previous exam date</th>
@@ -80,7 +82,7 @@ $TSTUDENTSOFSSSD="CREATE TEMPORARY TABLE TSSSSSD
 
 $ETSTUDENTSOFSSSD=mysqli_query($connection,$TSTUDENTSOFSSSD);
 // جلب البيانات السابقة للمادة
-$Pdataofselectesubject="SELECT DISTINCT Subject_name ,exam_days,exam_dates FROM Examdata where `Subject_ID`='$selectedsubject' ";
+$Pdataofselectesubject="SELECT DISTINCT Subject_name,lecturer_name,exam_days,exam_dates FROM Examdata where `Subject_ID`='$selectedsubject' ";
 $EPdataofselectesubject=mysqli_query($connection,$Pdataofselectesubject);
 
 $FSS=mysqli_fetch_array($EPdataofselectesubject); 
@@ -91,7 +93,10 @@ echo'<tr>';
 
     echo '<td>'.$selectedsubject.'</td>';
 
+
     echo '<td>'.$FSS['Subject_name'].'</td>';
+
+    echo '<td>'.$FSS['lecturer_name'].'</td>';
 
     echo '<td>'.$FSS['exam_days'].'</td>';
 
