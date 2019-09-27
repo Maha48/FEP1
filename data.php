@@ -43,17 +43,16 @@ if (mysqli_num_rows($query) > 0) {
                 values ('" . $column[0] . "','" . $column[1] . "','" . $column[2] . "','" . $column[3] . "','" . $column[4] . "','" . $column[5] . "','" . $column[6] . "','" . $column[7] . "')";
                 $result = mysqli_query($connection, $sqlInsert);
                 if (!empty($result)) {
-                    $addid="ALTER TABLE `examdata` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
-                    ";
-                    $Eaddid=mysqli_query($connection,$addid);
-                    $dataclean="DELETE n1 FROM Examdata n1, Examdata n2 WHERE n1.id > n2.id AND n1.`Class_ID` = n2.`Class_ID` AND n1.`Subject_ID` = n2.`Subject_ID` AND n1.`Student_ID` = n2.`Student_ID` AND n1.`Subject_name` = n2.`Subject_name` AND n1.`lecturer_name` = n2.`lecturer_name`AND n1.`exam_days` = n2.`exam_days` AND n1.`exam_dates` = n2.`exam_dates` and n1.`exam_times` = n2.`exam_times`
-                    ";
-                    $datacleaning=mysqli_query($connection,$dataclean);
+                    //$addid="ALTER TABLE `examdata` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
+                    //";
+                    //$Eaddid=mysqli_query($connection,$addid);
                     $message = "Upload Done ";
                 } else {
                     $message = "Problem In Upload Data";
                 }
             }
+            $dataclean="DELETE n1 FROM Examdata n1, Examdata n2 WHERE n1.id > n2.id AND n1.`Class_ID` = n2.`Class_ID` AND n1.`Subject_ID` = n2.`Subject_ID` AND n1.`Student_ID` = n2.`Student_ID` AND n1.`Subject_name` = n2.`Subject_name` AND n1.`lecturer_name` = n2.`lecturer_name`AND n1.`exam_days` = n2.`exam_days` AND n1.`exam_dates` = n2.`exam_dates` and n1.`exam_times` = n2.`exam_times`";
+            $datacleaning=mysqli_query($connection,$dataclean);
         }
     }
 }
