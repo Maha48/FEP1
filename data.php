@@ -168,11 +168,11 @@ if (isset($_POST['delete2'])) {
                     <table id="tablebtn">
                     <tr> 
                     <td><label class="col-md-4 control-label">Choose CSV File to Upload </label></td>
-                    <td><input  style="display:none"type='submit'id="import2" name='import2' class="import"value='Import'></td>
+                    <td><input  style="display:none"type='submit'id="import" name='import2' class="import"value='Import'></td>
                     </tr>
                     <tr>
                     <td> <label> Delete The Current Data </label> </td>
-                    <td> <input type="submit"value="Delete"name="delete2" id="delete2"></td>
+                    <td> <input type="submit"value="Delete"name="delete2" id="delete"></td>
                     </tr>
                     </table>
                 </div>
