@@ -66,6 +66,16 @@
     background:rgb(162,175,159);
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
+#uploadfile2{
+    width:35%; 
+    height: 300px;
+    margin:0px;
+    background:rgb(162,175,159);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    float:right;
+    margin:0; 
+    margin-top:-300px;
+}
 #file{
     width: 80px;
     text-align: center;

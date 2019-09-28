@@ -14,7 +14,7 @@ $connection = mysqli_connect($db_host, $db_username, $db_password, $Database,'88
 
 if(isset($_POST['processingg'])){
     
-    //تحديد الطلاب الذين لديهم المشكله بشرط ان تكون مادتين مختلفتين
+        //تحديد الطلاب الذين لديهم المشكله بشرط ان تكون مادتين مختلفتين
     $SSSD="CREATE TEMPORARY table SSSD
     SELECT DISTINCT e1.*  from Examdata e1 , Examdata e2
     WHERE e2.Student_ID=e1.Student_ID AND

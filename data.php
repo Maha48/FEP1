@@ -111,7 +111,77 @@ if (isset($_POST['delete'])) {
     </div>
 </div>
 </div>
+
 <!--End upload file-->
+<?php
+$queryempty2 = 'select * From students_away';
+$query2 = mysqli_query($connection, $queryempty2) or die("Error in query: $query2. " . mysqli_error());
+if (mysqli_num_rows($query2) > 0) {
+    $message2 = "There is data";
+} else {
+    if (isset($_POST["import2"])) {
+        $fileName = $_FILES["file"]["tmp_name"];
+        if ($_FILES["file"]["size"] > 0) {
+            $file = fopen($fileName, "r");
+            while (($column = fgetcsv($file, 110000, ",")) !== false) {
+                $sqlInsert1 = "INSERT into students_away (Student_ID,town,distance,department)
+                values ('" . $column[0] . "','" . $column[1] . "','" . $column[2] . "','" . $column[3] . "')";
+                $resultw = mysqli_query($connection, $sqlInsert1);
+                if (!empty($resultw)) {
+                    //$addid="ALTER TABLE `examdata` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
+                    //";
+                    //$Eaddid=mysqli_query($connection,$addid);
+                    $message2 = "Upload Done ";
+                } else {
+                    $message2 = "Problem In Upload Data";
+                }
+            }
+            $dataclean2="DELETE n1 FROM students_away n1, students_away n2 WHERE n1.id > n2.id AND n1.`Student_ID` = n2.`Student_ID`";
+            $datacleaning2=mysqli_query($connection,$dataclean2);
+        }
+    }
+}
+if (isset($_POST['delete2'])) {
+
+
+    $sqldelete2 = "delete from students_away";
+    $result2 = mysqli_query($connection, $sqldelete2);
+    if (!empty($result2)) {
+        $message2 = "Deleted Done";
+    }
+}
+?>
+<div id="uploadfile2">
+<br>
+<div id="outer-scontainer">
+<div id="uploaddiv">
+<div id="response"><?php if (!empty($message2)) {echo $message2;}?></div>
+    <div class="row">
+            <form class="form-horizontal" action="" method="post"
+            name="frmCSVImport2" id="frmCSVImport2" enctype="multipart/form-data">
+                <div class="input-row">
+                    <label>
+                        <input type="file" name="file"id="file" class="file1"accept=".csv">
+                        <img src="images/upload-2.png"id="file"><br>
+                    </label>
+                    <br>
+                    <table id="tablebtn">
+                    <tr> 
+                    <td><label class="col-md-4 control-label">Choose CSV File to Upload </label></td>
+                    <td><input  style="display:none"type='submit'id="import2" name='import2' class="import"value='Import'></td>
+                    </tr>
+                    <tr>
+                    <td> <label> Delete The Current Data </label> </td>
+                    <td> <input type="submit"value="Delete"name="delete2" id="delete2"></td>
+                    </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
 <!-- SSD->student in same day-->
 <div id="ssd_div" >
 <form method="POST">
@@ -141,7 +211,11 @@ if (isset($_POST['delete'])) {
 </div>
 <div class="SSD-tables">
 <?php
-$SSD_sql = $connection->query("SELECT * from Examdata join (SELECT Student_ID, count(*), exam_dates FROM Examdata group by Student_ID, exam_dates having count(*) > 1) Examdata1 on Examdata.Student_ID=Examdata1.Student_ID and Examdata1.exam_dates=Examdata.exam_dates order by Examdata1.Student_ID,Examdata1.exam_dates ;")->fetch_all(MYSQLI_ASSOC);
+$SSD_sql = $connection->query("SELECT * from Examdata join (SELECT Student_ID, count(*), exam_dates FROM Examdata 
+group by Student_ID, exam_dates
+having count(*) > 1) Examdata1 on Examdata.Student_ID=Examdata1.Student_ID 
+and Examdata1.exam_dates=Examdata.exam_dates 
+order by Examdata1.Student_ID,Examdata1.exam_dates ;")->fetch_all(MYSQLI_ASSOC);
 $student = "";
 foreach ($SSD_sql as $sq) {
     if ($student != $sq["Student_ID"]) {
@@ -276,13 +350,14 @@ window.onclick = function(event) {
 <table id="Mainـhead">
 <thead>
 <tr ID="HE">
-    <th width="12.5%">Class ID</th>
-    <th width="12.5%"> Subject ID</th>
+    <th width="12.5%">Subject ID</th>
+
     <th width="12.5%">First Subject Name</th>
-    <th width="12.5%">lecturer    name</th>
+    <th width="12.5%">Lecturer    name</th>
     <th width="12.5%">First Exam    Day</th>
     <th width="12.5%">First Exam    Date</th>
     <th width="12.5%">Next  Subject Name</th>
+    <th width="12.5%">lecturer    name</th>
     <th width="12.5%">Next  Exam    Day</th>
     <th width="12.5%">Next  Exam    Date</th>
 </tr>
@@ -297,9 +372,9 @@ window.onclick = function(event) {
 try {
      $conn=new pdo ("mysql:host=$db_host;port=8889;dbname=$Database" , $db_username,$db_password);
 //البحث عن الطلاب الذين لديهم اختبارات متتالية في أيام متتابعة 
-    $CEDSA="SELECT e1.Class_ID,e1.Subject_ID, e1.Student_ID,
-    e1.subject_name as first_subject_name,e1.lecturer_name,e1.exam_days as first_exam_day,  e1.exam_dates as First_Exam_Date,
-        e2.subject_name as next_subject_name , e2.exam_days as next_exam_day,e2.exam_dates as next_Exam_Date
+    $CEDSA="SELECT e1.Subject_ID as  first_Subject_ID, e1.Student_ID,
+    e1.subject_name as  first_subject_name,e1.lecturer_name as  first_lecturer_name,e1.exam_days as first_exam_day,  e1.exam_dates as First_Exam_Date,
+        e2.subject_name as next_subject_name ,e2.Subject_ID as next_Subject_ID,e2.lecturer_name as next_lecturer_name , e2.exam_days as next_exam_day,e2.exam_dates as next_Exam_Date
         , e1.Student_ID in (
     select B.student_ID from students_away B
 ) as away
@@ -329,27 +404,29 @@ foreach ($CED_sql as $cq) {
     if ($cq['away']==0){
 
     echo '<tr id="CED_data" class="'. $student_CED . '" >';
-    echo '<td class="myDIV">' . $cq["Class_ID"] . '</td>';
-    echo '<td class="myDIV">' . $cq["Subject_ID"] . '</td>';
+    echo '<td class="myDIV">' . $cq["first_Subject_ID"] . '</td>';
     echo '<td class="myDIV">' . $cq["first_subject_name"] . '</td>';
-    echo '<td class="myDIV">' . $cq["lecturer_name"] . '</td>';
+    echo '<td class="myDIV">' . $cq["first_lecturer_name"] . '</td>';
     echo '<td class="myDIV">' . $cq["first_exam_day"] . '</td>';
     echo '<td class="myDIV">' . $cq["First_Exam_Date"] . '</td>';
     
+    echo '<td class="myDIV">' . $cq["next_Subject_ID"] . '</td>';
     echo '<td class="myDIV">' . $cq["next_subject_name"] . '</td>';
+    echo '<td class="myDIV">' . $cq["next_lecturer_name"] . '</td>';
     echo '<td class="myDIV">' . $cq["next_exam_day"] . '</td>';
     echo '<td class="myDIV">' . $cq["next_Exam_Date"] . '</td></tr>';
 }
 else{
     echo '<tr id="CED_data" class="'. $student_CED . '" >';
-    echo '<td class="SA">' . $cq["Class_ID"] . '</td>';
-    echo '<td class="SA">' . $cq["Subject_ID"] . '</td>';
+    echo '<td class="SA">' . $cq["first_Subject_ID"] . '</td>';
     echo '<td class="SA">' . $cq["first_subject_name"] . '</td>';
-    echo '<td class="SA">' . $cq["lecturer_name"] . '</td>';
+    echo '<td class="SA">' . $cq["first_lecturer_name"] . '</td>';
     echo '<td class="SA">' . $cq["first_exam_day"] . '</td>';
     echo '<td class="SA">' . $cq["First_Exam_Date"] . '</td>';
     
+    echo '<td class="SA">' . $cq["next_Subject_ID"] . '</td>';
     echo '<td class="SA">' . $cq["next_subject_name"] . '</td>';
+    echo '<td class="SA">' . $cq["next_lecturer_name"] . '</td>';
     echo '<td class="SA">' . $cq["next_exam_day"] . '</td>';
     echo '<td class="SA">' . $cq["next_Exam_Date"] . '</td></tr>';
 }
